@@ -1,3 +1,8 @@
+
+data "http" "myip" {
+  url = "http://ipv4.icanhazip.com"
+}
+
 resource "aws_security_group" "demo-sg" {
   name        = "sec-grp"
   description = "Allow HTTP/HTTPS and SSH traffic via Terraform"
@@ -18,7 +23,7 @@ resource "aws_security_group" "demo-sg" {
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
+    cidr_blocks = ["${chomp(data.http.myip.body)}/32"]
   }
 
   egress {
